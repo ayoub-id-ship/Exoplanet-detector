@@ -1,6 +1,8 @@
 ﻿import streamlit as st
 import numpy as np
 import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Conv1D, MaxPooling1D, Flatten, Dense, Dropout
 import matplotlib.pyplot as plt
 
 st.set_page_config(page_title="Exoplanet Detector 1D-CNN", layout="wide")
@@ -9,10 +11,26 @@ st.title("🪐 AI Exoplanet Detection System")
 st.write("1D Convolutional Neural Network trained on NASA Kepler Light Curves.")
 
 @st.cache_resource
-def load_model():
-    return tf.keras.models.load_model("exoplanet_kepler_cnn.keras")
+def load_trained_model():
+    # Re-instantiate the exact model architecture to prevent serialization mismatch errors
+    model = Sequential([
+        Conv1D(filters=16, kernel_size=11, activation='relu', input_shape=(3197, 1)),
+        MaxPooling1D(pool_size=2),
+        Conv1D(filters=32, kernel_size=7, activation='relu'),
+        MaxPooling1D(pool_size=2),
+        Flatten(),
+        Dense(64, activation='relu'),
+        Dropout(0.5),
+        Dense(1, activation='sigmoid')
+    ])
+    model.load_weights("exoplanet_kepler_cnn.keras")
+    return model
 
-model = load_model()
+try:
+    model = load_trained_model()
+except Exception as e:
+    st.error(f"Error loading model weights: {e}")
+    st.stop()
 
 st.sidebar.header("Light Curve Input")
 sample_type = st.sidebar.selectbox("Choose a test signal profile:", ["Synthetic Transit (Exoplanet)", "Flat Star Signal (Non-Exoplanet)"])
