@@ -12,9 +12,8 @@ st.write("1D Convolutional Neural Network trained on NASA Kepler Light Curves.")
 
 @st.cache_resource
 def load_trained_model():
-    # Re-instantiate the exact model architecture to prevent serialization mismatch errors
     model = Sequential([
-        Conv1D(filters=16, kernel_size=11, activation='relu', input_shape=(3197, 1)),
+        Conv1D(filters=16, kernel_size=9, activation='relu', input_shape=(3197, 1)),
         MaxPooling1D(pool_size=2),
         Conv1D(filters=32, kernel_size=7, activation='relu'),
         MaxPooling1D(pool_size=2),
