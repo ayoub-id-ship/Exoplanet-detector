@@ -15,7 +15,7 @@ def load_trained_model():
     model = Sequential([
         Conv1D(filters=16, kernel_size=9, activation='relu', input_shape=(3197, 1)),
         MaxPooling1D(pool_size=2),
-        Conv1D(filters=32, kernel_size=7, activation='relu'),
+        Conv1D(filters=32, kernel_size=5, activation='relu'),
         MaxPooling1D(pool_size=2),
         Flatten(),
         Dense(64, activation='relu'),
